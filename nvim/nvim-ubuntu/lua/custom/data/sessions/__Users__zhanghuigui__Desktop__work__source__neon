@@ -1,0 +1,73 @@
+let SessionLoad = 1
+let s:so_save = &g:so | let s:siso_save = &g:siso | setg so=0 siso=0 | setl so=-1 siso=-1
+let v:this_session=expand("<sfile>:p")
+silent only
+silent tabonly
+cd ~/Desktop/work/source/neon
+if expand('%') == '' && !&modified && line('$') <= 1 && getline(1) == ''
+  let s:wipebuf = bufnr('%')
+endif
+let s:shortmess_save = &shortmess
+if &shortmess =~ 'A'
+  set shortmess=aoOA
+else
+  set shortmess=aoO
+endif
+badd +5 pageserver/src/tenant/metadata.rs
+badd +29 pgxn/neon/pagestore_smgr.c
+badd +176 pgxn/neon/pagestore_client.h
+badd +1 proxy/README.md
+badd +121 proxy/src/waiters.rs
+badd +2 pgxn/neon/neon.h
+badd +456 pgxn/neon/libpagestore.c
+badd +3 pgxn/hnsw/README.md
+badd +28 pgxn/hnsw/hnswalg.h
+badd +99 pgxn/neon/relsize_cache.c
+badd +2 pgxn/neon_walredo/inmem_smgr.h
+badd +2 pgxn/neon_walredo/neon_seccomp.h
+badd +313 pgxn/neon_walredo/inmem_smgr.c
+badd +11 pgxn/neon_walredo/walredoproc.c
+badd +696 pageserver/src/tenant/mgr.rs
+badd +192 pageserver/src/tenant/disk_btree.rs
+badd +200 pageserver/src/tenant/storage_layer.rs
+badd +69 pageserver/src/tenant/timeline.rs
+badd +12 pageserver/src/tenant/blob_io.rs
+badd +73 pageserver/src/tenant/block_io.rs
+argglobal
+%argdel
+edit pageserver/src/tenant/storage_layer.rs
+argglobal
+balt pageserver/src/tenant/metadata.rs
+setlocal fdm=manual
+setlocal fde=0
+setlocal fmr={{{,}}}
+setlocal fdi=#
+setlocal fdl=0
+setlocal fml=1
+setlocal fdn=20
+setlocal fen
+silent! normal! zE
+let &fdl = &fdl
+let s:l = 200 - ((13 * winheight(0) + 31) / 63)
+if s:l < 1 | let s:l = 1 | endif
+keepjumps exe s:l
+normal! zt
+keepjumps 200
+normal! 037|
+lcd ~/Desktop/work/source/neon
+tabnext 1
+if exists('s:wipebuf') && len(win_findbuf(s:wipebuf)) == 0 && getbufvar(s:wipebuf, '&buftype') isnot# 'terminal'
+  silent exe 'bwipe ' . s:wipebuf
+endif
+unlet! s:wipebuf
+set winheight=1 winwidth=20
+let &shortmess = s:shortmess_save
+let s:sx = expand("<sfile>:p:r")."x.vim"
+if filereadable(s:sx)
+  exe "source " . fnameescape(s:sx)
+endif
+let &g:so = s:so_save | let &g:siso = s:siso_save
+set hlsearch
+doautoall SessionLoadPost
+unlet SessionLoad
+" vim: set ft=vim :
